@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import MastTitle from "../../Shared/MastTitle";
 import CustomButton from "../../Shared/CustomButton";
+import ImageUploadBox from "../../Shared/ImageUploadBox/ImageUploadBox";
 //import'./style.css';
 
 const AddProfile = (props) => {
@@ -43,10 +44,10 @@ const AddProfile = (props) => {
       return prev;
     });
   };
-  const removeEmptySocialLinks = (arr)=>{
-    const modArr = arr.filter((a) => a.title !== "" && a.link !=="");
-    return modArr
-  }
+  const removeEmptySocialLinks = (arr) => {
+    const modArr = arr.filter((a) => a.title !== "" && a.link !== "");
+    return modArr;
+  };
   const dataSubmitHandler = async (values, { setSubmitting, resetForm }) => {
     const data = JSON.stringify({
       name: values.title,
@@ -65,7 +66,7 @@ const AddProfile = (props) => {
   };
   return (
     <React.Fragment>
-      <MastTitle title="Add Profile"/>
+      <MastTitle title="Add Profile" />
       <div className="px-[1rem]  md:px-[5rem] py-[2rem] ">
         <div className="BackgroundBlurForm p-2 md:p-6 rounded border shadow-lg">
           <Formik
@@ -83,7 +84,8 @@ const AddProfile = (props) => {
                 .min(4, "Must be atleast 4 characters")
                 .max(100, "Cannot exceed 200 character")
                 .required("Required"),
-              role: Yup.string().required("Required"), languages: Yup.string().required("Required"),
+              role: Yup.string().required("Required"),
+              languages: Yup.string().required("Required"),
               frameworks: Yup.string().required("Required"),
               otherSkills: Yup.string().required("Required"),
             })}
@@ -131,6 +133,10 @@ const AddProfile = (props) => {
                   placeholder="Put any banner image URL hosted online (optional)"
                 />
                 <div className="m-3 pt-2 pl-2 font-bold">
+                  <p>Select Profile Picture</p>
+                </div>
+                <ImageUploadBox />
+                <div className="m-3 pt-2 pl-2 font-bold">
                   <p>Social Links</p>
                 </div>
                 {linksArray.map((item, index) => (
@@ -163,7 +169,11 @@ const AddProfile = (props) => {
                     isDisabled={props.isSubmitting}
                     type="submit"
                     text={props.isSubmitting ? "Submitting" : "Submit"}
-                  >Submit</CustomButton>
+                  >
+                    <p className="dark:text-gray-800 px-2 text-[22px] font-bold">
+                      Submit
+                    </p>
+                  </CustomButton>
                 </div>
               </Form>
             )}
