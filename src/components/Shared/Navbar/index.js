@@ -109,7 +109,7 @@ export default function Navbar(props) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {props.children}
+                {!user && props.children}
                 <button
                   type="button"
                   className="bg-[#FB5343] p-1 rounded-full text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -137,7 +137,7 @@ export default function Navbar(props) {
                           className="h-8 w-8 rounded-full"
                           src={user.photoURL}
                           alt="google"
-                          referrerpolicy="no-referrer"
+                          referrerPolicy="no-referrer"
                         />
                       </Menu.Button>
                     </div>
@@ -157,7 +157,7 @@ export default function Navbar(props) {
                               onClick={() => signOut(auth)}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 z-20"
                               )}
                             >
                               Sign out

@@ -25,16 +25,15 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export async function uploadImage(pathWithFileName, file) {
-  let downloadUrl;
   const metadata = {
     contentType: "image/jpeg",
   };
   // Upload file and metadata to the object 'images/mountains.jpg'
   const storageRef = ref(storage, pathWithFileName);
-  const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+  const uploadTask = await uploadBytesResumable(storageRef, file, metadata);
 
   // Listen for state changes, errors, and completion of the upload.
-  uploadTask.on(
+   uploadTask.on(
     "state_changed",
     (snapshot) => {
       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
@@ -71,15 +70,13 @@ export async function uploadImage(pathWithFileName, file) {
           break;
       }
     },
-    () => {
+    async() => {
       // Upload completed successfully, now we can get the download URL
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+     await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         console.log("File available at", downloadURL);
-        downloadUrl = downloadURL;
+        return downloadURL;
       });
     }
   );
-  return downloadUrl;
 }
 
-export async function uploadToFirebase() {}

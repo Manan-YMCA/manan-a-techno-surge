@@ -16,6 +16,7 @@ import { ref } from "firebase/storage";
 import { useUploadFile } from "react-firebase-hooks/storage";
 import { storage, auth, db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { getDownloadURL } from "firebase/storage";
 import { useDownloadURL } from "react-firebase-hooks/storage";
 import imageCompression from "browser-image-compression";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -37,9 +38,10 @@ const AddProfile = (props) => {
     user && ref(storage, `members/${user.email}.jpg`)
   );
 
-  const upload = async (pic, picRef) => {
+  const upload = async (pic, picRef,size) => {
+    let url
     const options = {
-      maxSizeMB: 0.1,
+      maxSizeMB: size,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
     };
@@ -52,17 +54,18 @@ const AddProfile = (props) => {
       console.log(
         `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
       ); // smaller than maxSizeMB
-
       await uploadFile(picRef, compressedFile, {
         contentType: "image/jpeg",
+      }).then(async() => {
+        await getDownloadURL(picRef).then((downloadUrl) => {
+          console.log("url", downloadUrl);
+          url= downloadUrl;
+        });
       });
-      const url = downloadUrl;
-      console.log(url);
-      return url;
     } catch (error) {
       console.log(error);
     }
-    return "";
+    return url
   };
 
   const addLinkHandler = () => {
@@ -115,7 +118,7 @@ const AddProfile = (props) => {
         socialLinks: removeEmptySocialLinks(linksArray),
         banner: values.banner,
         permission: "member",
-        pfp: await upload(profilePic[0], profilePicRef),
+        pfp: await upload(profilePic[0], profilePicRef,0.1),
         email: user.email,
       };
       await setDoc(doc(db, "userProfiles", user.email), data);

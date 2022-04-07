@@ -19,7 +19,7 @@
 }
 
 .MemberCard .CardDiv .DpImage {
-  @apply object-cover object-center h-32;
+  @apply object-cover object-center h-32 w-full;
 }
 
 .MemberCard .CardDiv .InfoDiv {
