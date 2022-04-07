@@ -10,12 +10,18 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-const navigation = [
+const normalRoutes = [
   { name: "Home", href: "/", current: true },
   { name: "Members", href: "/members", current: false },
   { name: "Events", href: "/events", current: false },
   { name: "Gallery", href: "/gallery", current: false },
-  { name: "Add Profile", href: "/add-profile", current: false },
+];
+const authRoutes = [
+  { name: "Home", href: "/", current: true },
+  { name: "Members", href: "/members", current: false },
+  { name: "Events", href: "/events", current: false },
+  { name: "Gallery", href: "/gallery", current: false },
+  { name: "Add Profile", href: "/add-profile", current: false, needAuth: true },
 ];
 
 function classNames(...classes) {
@@ -59,23 +65,46 @@ export default function Navbar(props) {
                   </p>
                 </div>
                 <div className="hidden sm:block sm:ml-6">
-                  <div className="flex space-x-4">
-                    {navigation.map((item, index) => (
-                      <NavLink
-                        onClick={() => setCurrentPage(index)}
-                        key={item.name}
-                        to={item.href}
-                        className={classNames(
-                          currentPage === index
-                            ? "bg-gray-800 text-white"
-                            : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
-                          "px-3 py-2 rounded-md text-sm font-medium"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </NavLink>
-                    ))}
+                  <div className="flex items-center justify-center space-x-4">
+                    {user ? (
+                      <div className="flex items-center justify-center space-x-4">
+                        {authRoutes.map((item, index) => (
+                          <NavLink
+                            onClick={() => setCurrentPage(index)}
+                            key={item.name}
+                            to={item.href}
+                            className={classNames(
+                              currentPage === index
+                                ? "bg-gray-800 text-white"
+                                : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
+                              "px-3 py-2 rounded-md text-sm font-medium"
+                            )}
+                            aria-current={item.current ? "page" : undefined}
+                          >
+                            {item.name}
+                          </NavLink>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-1 lg:space-x-4">
+                        {normalRoutes.map((item, index) => (
+                          <NavLink
+                            onClick={() => setCurrentPage(index)}
+                            key={item.name}
+                            to={item.href}
+                            className={classNames(
+                              currentPage === index
+                                ? "bg-gray-800 text-white"
+                                : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
+                              "px-3 py-2 rounded-md text-sm font-medium"
+                            )}
+                            aria-current={item.current ? "page" : undefined}
+                          >
+                            {item.name}
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -146,23 +175,54 @@ export default function Navbar(props) {
 
           <Disclosure.Panel className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 BackgroundBlur">
-              {navigation.map((item, index) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="div"
-                  className={classNames(
-                    currentPage === index
-                      ? "bg-gray-200 text-gray-700"
-                      : "text-gray-400 hover:bg-gray-700 hover:text-white",
-                    "block px-3 py-2 rounded-md text-base font-medium"
-                  )}
-                  aria-current={currentPage === index ? "page" : undefined}
-                >
-                  <NavLink onClick={() => setCurrentPage(index)} to={item.href}>
-                    {item.name}
-                  </NavLink>
-                </Disclosure.Button>
-              ))}
+              {user ? (
+                <div>
+                  {authRoutes.map((item, index) => (
+                    <Disclosure.Button
+                      key={item.name}
+                      as="div"
+                      className={classNames(
+                        currentPage === index
+                          ? "bg-gray-200 text-gray-700"
+                          : "text-gray-400 hover:bg-gray-700 hover:text-white",
+                        "block px-3 py-2 rounded-md text-base font-medium"
+                      )}
+                      aria-current={currentPage === index ? "page" : undefined}
+                    >
+                      <NavLink
+                        onClick={() => setCurrentPage(index)}
+                        to={item.href}
+                      >
+                        {item.name}
+                      </NavLink>
+                    </Disclosure.Button>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  {normalRoutes.map((item, index) => (
+                    <Disclosure.Button
+                      key={item.name}
+                      as="div"
+                      className={classNames(
+                        currentPage === index
+                          ? "bg-gray-200 text-gray-700"
+                          : "text-gray-400 hover:bg-gray-700 hover:text-white",
+                        "block px-3 py-2 rounded-md text-base font-medium"
+                      )}
+                      aria-current={currentPage === index ? "page" : undefined}
+                    >
+                      <NavLink
+                        onClick={() => setCurrentPage(index)}
+                        to={item.href}
+                      >
+                        {item.name}
+                      </NavLink>
+                    </Disclosure.Button>
+                  ))}
+                </div>
+              )}
+
               <Disclosure.Button
                 as="div"
                 className={classNames(
