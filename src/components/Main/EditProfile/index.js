@@ -24,7 +24,7 @@ import LoadingScreen from "../../Shared/LoadingScreen";
 import { useForkRef } from "@mui/material";
 //import'./style.css';
 
-const AddProfile = (props) => {
+const EditProfile = (props) => {
   const [user, loading, UserError] = useAuthState(auth);
   const [error, setError] = useState(null);
   const [linksArray, setLinksArray] = useState([{ title: "", link: "" }]);
@@ -38,8 +38,8 @@ const AddProfile = (props) => {
     user && ref(storage, `members/${user.email}.jpg`)
   );
 
-  const upload = async (pic, picRef,size) => {
-    let url
+  const upload = async (pic, picRef, size) => {
+    let url;
     const options = {
       maxSizeMB: size,
       maxWidthOrHeight: 1920,
@@ -56,16 +56,16 @@ const AddProfile = (props) => {
       ); // smaller than maxSizeMB
       await uploadFile(picRef, compressedFile, {
         contentType: "image/jpeg",
-      }).then(async() => {
+      }).then(async () => {
         await getDownloadURL(picRef).then((downloadUrl) => {
           console.log("url", downloadUrl);
-          url= downloadUrl;
+          url = downloadUrl;
         });
       });
     } catch (error) {
       console.log(error);
     }
-    return url
+    return url;
   };
 
   const addLinkHandler = () => {
@@ -134,7 +134,7 @@ const AddProfile = (props) => {
     <React.Fragment>
       {user && (
         <div>
-          <MastTitle title="Add Profile" />
+          <MastTitle title="Edit Profile" />
           {error && (
             <ErrorModal errorText={error} clicked={() => setError(null)} />
           )}
@@ -269,4 +269,4 @@ const AddProfile = (props) => {
   );
 };
 
-export default AddProfile;
+export default EditProfile;

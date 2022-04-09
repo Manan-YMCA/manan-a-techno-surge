@@ -12,39 +12,47 @@ import AddProfile from "./components/Main/AddProfile";
 import CustomButton from "./components/Shared/CustomButton";
 import { auth, db } from "./components/firebase";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { getFirestore, collection } from "firebase/firestore";
-import { useCollectionOnce } from "react-firebase-hooks/firestore";
+import { collection, doc } from "firebase/firestore";
+import { useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ErrorModal from "./components/Shared/ErrorModal";
+import AddEvents from "./components/Main/AddEvents";
+import EditProfile from "./components/Main/EditProfile";
 
 function App() {
-  const [signInWithGoogle, signInUser, userLoading, userError] =
+  const [signInWithGoogle, signInUser, signInUserLoading, signInUserError] =
     useSignInWithGoogle(auth);
-
-  const [pageError, setPageError] = useState(null);
-  const [snapshot, loading, error] = useCollectionOnce(
-    collection(db, "allowedUsers")
+  const [user, userLoading, userError] = useAuthState(auth);
+  const [profileData, profileDataLoading, profileDataError] = useDocument(
+    doc(db, "userProfiles", user ? user.email : "dummy"),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
   );
+  const [pageError, setPageError] = useState(null);
+  const [allowedUserSnapshot, allowedUserLoading, allowedUserError] =
+    useCollectionOnce(collection(db, "allowedUsers"));
 
   useEffect(() => {
     if (signInUser) {
-      if (snapshot) {
-        const res = snapshot.docs.map((doc) => doc.data().Users);
+      if (allowedUserSnapshot ) {
+        const res = allowedUserSnapshot.docs.map((doc) => doc.data().Users);
+        console.log("res",res)
         if (res[0].includes(signInUser.user.email)) {
           console.log("contains");
         } else {
           signOut(auth);
-          setPageError("You're not authorized as club member :(")
+          setPageError("You're not authorized as club member :(");
         }
       }
     }
-  }, [signInUser, snapshot]);
+  }, [signInUser, allowedUserSnapshot]);
 
   return (
     <div className="App overflow-x-hidden">
       <Router>
-        <Navbar>
+        <Navbar user={user} profileExists={profileData}>
           <CustomButton
             onClick={() => signInWithGoogle()}
             className="hidden md:block pr-3"
@@ -54,19 +62,41 @@ function App() {
         </Navbar>
         <BackgroundLayout />
         {pageError && (
-          <ErrorModal errorText={pageError} clicked={() => setPageError(null)} />
+          <ErrorModal
+            errorText={pageError}
+            clicked={() => setPageError(null)}
+          />
         )}
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/members" element={<Members />} />
           <Route path="/events" element={<Events />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route
-            path="/add-profile"
-            element={
-              <AddProfile user={signInUser} error={error} loading={loading} />
-            }
-          />
+          {user && !profileData && (
+            <Route
+              path="/add-profile"
+              element={
+                <AddProfile
+                  user={signInUser}
+                  error={allowedUserError}
+                  loading={allowedUserLoading}
+                />
+              }
+            />
+          )}
+          {user && profileData && (
+            <Route
+              path="/edit-profile"
+              element={
+                <EditProfile
+                  user={signInUser}
+                  error={allowedUserError}
+                  loading={allowedUserLoading}
+                />
+              }
+            />
+          )}
+          <Route path="/add-events" element={<AddEvents />} />
           <Route path="*" element={<Landing />} />
         </Routes>
         <Footer />

@@ -1,14 +1,15 @@
 import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { FaFileMedicalAlt } from "react-icons/fa";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImCross } from "react-icons/im";
 import useDarkMode from "../../hooks/useDarkMode";
 import MananLogo from "../../assets/manan-logo.png";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { useDocument } from "react-firebase-hooks/firestore";
+import { doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { signOut } from "firebase/auth";
 const normalRoutes = [
   { name: "Home", href: "/", current: true },
@@ -16,12 +17,23 @@ const normalRoutes = [
   { name: "Events", href: "/events", current: false },
   { name: "Gallery", href: "/gallery", current: false },
 ];
-const authRoutes = [
+const profileExistsRoutes = [
   { name: "Home", href: "/", current: true },
   { name: "Members", href: "/members", current: false },
   { name: "Events", href: "/events", current: false },
   { name: "Gallery", href: "/gallery", current: false },
-  { name: "Add Profile", href: "/add-profile", current: false, needAuth: true },
+  { name: "Add Profile", href: "/add-profile", current: false },
+  { name: "Add Events", href: "/add-events", current: false },
+];
+const profileDoesNotExistsRoutes = [
+  [
+    { name: "Home", href: "/", current: true },
+    { name: "Members", href: "/members", current: false },
+    { name: "Events", href: "/events", current: false },
+    { name: "Gallery", href: "/gallery", current: false },
+    { name: "Edit Profile", href: "/edit-profile", current: false },
+    { name: "Add Events", href: "/add-events", current: false },
+  ],
 ];
 
 function classNames(...classes) {
@@ -29,9 +41,15 @@ function classNames(...classes) {
 }
 
 export default function Navbar(props) {
-  const [user, loading, error] = useAuthState(auth);
+  const { user, profileExists } = props;
   const [theme, setTheme] = useDarkMode();
   const [currentPage, setCurrentPage] = useState(0);
+
+  const routesHandler = (user, exists) => {
+    if (user && !exists) return profileDoesNotExistsRoutes;
+    if (user && exists) return profileExistsRoutes;
+    return normalRoutes;
+  };
   return (
     <Disclosure
       as="nav"
@@ -66,9 +84,9 @@ export default function Navbar(props) {
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex items-center justify-center space-x-4">
-                    {user ? (
+                    {props.user ? (
                       <div className="flex items-center justify-center space-x-4">
-                        {authRoutes.map((item, index) => (
+                        {routesHandler().map((item, index) => (
                           <NavLink
                             onClick={() => setCurrentPage(index)}
                             key={item.name}
@@ -87,7 +105,7 @@ export default function Navbar(props) {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center space-x-1 lg:space-x-4">
-                        {normalRoutes.map((item, index) => (
+                        {routesHandler().map((item, index) => (
                           <NavLink
                             onClick={() => setCurrentPage(index)}
                             key={item.name}
@@ -109,7 +127,7 @@ export default function Navbar(props) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {!user && props.children}
+                {user && props.children}
                 <button
                   type="button"
                   className="bg-[#FB5343] p-1 rounded-full text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -157,7 +175,7 @@ export default function Navbar(props) {
                               onClick={() => signOut(auth)}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 z-20"
+                                "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               Sign out
@@ -177,7 +195,7 @@ export default function Navbar(props) {
             <div className="px-2 pt-2 pb-3 space-y-1 BackgroundBlur">
               {user ? (
                 <div>
-                  {authRoutes.map((item, index) => (
+                  {routesHandler().map((item, index) => (
                     <Disclosure.Button
                       key={item.name}
                       as="div"
