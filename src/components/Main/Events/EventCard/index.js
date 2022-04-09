@@ -1,22 +1,19 @@
 import React from "react";
-
+import ReactMarkdown from "react-markdown";
 import "./style.css";
 
 const EventCard = (props) => {
+  const { name, desc, date, eventImage } = props.event;
   return (
     <div className="EventCard">
       <div className="ImageDiv">
-        <img
-          src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/tech-event-poster-motion-design-template-8336d288fcc0d6ff912c8b88b4b5c420_screen.jpg?ts=1567082380"
-          alt=""
-        />
+        <img src={eventImage} alt="" />
       </div>
       <div className="InfoDiv">
-        <div className="Title">Event name go brrr</div>
-        <div className="Date">10 Feb 2022</div>
+        <div className="Title">{name}</div>
+        <div className="Date">{date}</div>
         <div className="Information">
-          {" "}
-          Here goes description which will be in Markdown
+          <ReactMarkdown>{desc}</ReactMarkdown>
         </div>
       </div>
     </div>

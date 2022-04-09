@@ -126,7 +126,7 @@ const AddProfile = (props) => {
       setProfilePic(null);
       setSubmitting(false);
       SetFormSubmitting(false);
-      // resetForm();
+      resetForm();
       // history.push(`/user/${auth.userId}`);
     }
   };

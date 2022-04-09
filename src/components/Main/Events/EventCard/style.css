@@ -1,6 +1,6 @@
 .EventCard {
   @apply rounded-lg overflow-hidden shadow-lg bg-white;
-  @apply max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto
+  @apply w-[90%] sm:w-[60%] md:w-[20rem] lg:w-[23rem] sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto
 }
 
 .EventCard .ImageDiv {
@@ -23,4 +23,7 @@
 
 .EventCard .InfoDiv .Information{
     @apply pt-4;
+}
+.EventCard .InfoDiv .Information h1{
+  @apply font-bold
 }

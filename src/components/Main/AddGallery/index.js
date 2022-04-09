@@ -17,10 +17,10 @@ import LoadingScreen from "../../Shared/LoadingScreen";
 import { v4 as uuidv4 } from "uuid";
 //import'./style.css';
 
-const AddEvents = (props) => {
+const AddGallery = (props) => {
   const [user, loading, UserError] = useAuthState(auth);
   const [error, setError] = useState(null);
-  const [eventPic, setEventPic] = useState(null);
+  const [galleryPic, setGalleryPic] = useState(null);
   const [formSubmitting, SetFormSubmitting] = useState(false);
   const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
   let eventPicRef;
@@ -57,23 +57,22 @@ const AddEvents = (props) => {
 
   const dataSubmitHandler = async (values, { setSubmitting, resetForm }) => {
     const uniqueId = uuidv4();
-    if (!setEventPic && user) {
-      setError("Please select a Event picture");
-    } else if (eventPic.length === 0) {
-      setError("Please select a Event picture");
+    if (!setGalleryPic && user) {
+      setError("Please select a Gallery picture");
+    } else if (galleryPic.length === 0) {
+      setError("Please select a Gallery picture");
     } else if (user) {
-      eventPicRef = ref(storage, `event/${uniqueId}.jpg`);
+      eventPicRef = ref(storage, `gallery/${uniqueId}.jpg`);
       SetFormSubmitting(true);
       const data = {
         name: values.name,
-        date: values.date,
         desc: values.desc,
         timestamp: new Date(),
-        eventImage: await upload(eventPic[0], eventPicRef, 0.1),
+        image: await upload(galleryPic[0], eventPicRef, 0.2),
       };
-      await setDoc(doc(db, "events", uniqueId), data);
+      await setDoc(doc(db, "gallery", uniqueId), data);
       console.log("Data", data);
-      setEventPic(null);
+    //   setGalleryPic(null);
       setSubmitting(false);
       SetFormSubmitting(false);
       resetForm();
@@ -84,7 +83,7 @@ const AddEvents = (props) => {
     <React.Fragment>
       {user && (
         <div>
-          <MastTitle title="Add Events" />
+          <MastTitle title="Add Gallery Picture" />
           {error && (
             <ErrorModal errorText={error} clicked={() => setError(null)} />
           )}
@@ -94,7 +93,6 @@ const AddEvents = (props) => {
               <Formik
                 initialValues={{
                   name: "",
-                  date: "",
                   desc: "",
                 }}
                 validationSchema={Yup.object({
@@ -102,7 +100,6 @@ const AddEvents = (props) => {
                     .min(4, "Must be atleast 4 characters")
                     .max(100, "Cannot exceed 200 character")
                     .required("Required"),
-                  date: Yup.string().required("Required"),
                   desc: Yup.string().required("Required"),
                 })}
                 onSubmit={dataSubmitHandler}
@@ -115,22 +112,17 @@ const AddEvents = (props) => {
                       placeholder="Name here"
                     />
                     <CustomTextInput
-                      label="Date of the event "
-                      name="date"
-                      placeholder="In format - 20 October 2022 "
-                    />
-                    <CustomTextInput
                       label="Description"
                       name="desc"
                       placeholder="Supports Markdown"
                       multiline
                     />
                     <div className="m-3 pt-2 pl-2 font-bold">
-                      <p>Select Event Picture</p>
+                      <p>Select Gallery Picture</p>
                     </div>
                     <ImageUploadBox
                       onDrop={(files) => {
-                        setEventPic(files);
+                        setGalleryPic(files);
                       }}
                     />
                     <div className="mt-6 flex items-center justify-center">
@@ -160,4 +152,4 @@ const AddEvents = (props) => {
   );
 };
 
-export default AddEvents;
+export default AddGallery;
