@@ -49,7 +49,6 @@ export default function Navbar(props) {
         setRoutes(profileDoesNotExistsRoutes);
         setPermission(null);
       } else if (loggedInUser && profileData) {
-        console.log("userData", profileData);
         setRoutes(profileExistsRoutes);
         setPermission(profileData.permission);
       } else {
@@ -190,7 +189,6 @@ export default function Navbar(props) {
                             )}
                           </Menu.Item>
                         )}
-
                         <Menu.Item>
                           {({ active }) => (
                             <div
@@ -237,15 +235,19 @@ export default function Navbar(props) {
                   </Disclosure.Button>
                 ))}
               </div>
-              <Disclosure.Button
-                as="div"
-                className={classNames(
-                  "text-gray-400 hover:bg-gray-700 hover:text-white",
-                  "block px-3 py-2 rounded-md text-base font-medium"
-                )}
-              >
-                Sign In
-              </Disclosure.Button>
+              {!user && (
+                <div onClick={props.onClick}>
+                  <Disclosure.Button
+                    as="div"
+                    className={classNames(
+                      "text-gray-400 hover:bg-gray-700 hover:text-white",
+                      "block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
+                    )}
+                  >
+                    Sign In
+                  </Disclosure.Button>
+                </div>
+              )}
             </div>
           </Disclosure.Panel>
         </>

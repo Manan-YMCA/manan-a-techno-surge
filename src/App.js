@@ -33,7 +33,7 @@ function App() {
   const [pageError, setPageError] = useState(null);
   const [allowedUserSnapshot, allowedUserLoading, allowedUserError] =
     useCollectionOnce(collection(db, "allowedUsers"));
-
+  const [permission, setPermission] = useState(null);
   useEffect(() => {
     if (signInUser) {
       if (allowedUserSnapshot) {
@@ -47,6 +47,14 @@ function App() {
       }
     }
   }, [signInUser, allowedUserSnapshot]);
+  useEffect(() => {
+    if (user && profileData && profileData.data()) {
+      setPermission(profileData.data().permission);
+    }
+    if (!user) {
+      setPermission(null);
+    }
+  }, [profileData, user]);
 
   return (
     <div className="App overflow-x-hidden">
@@ -54,6 +62,7 @@ function App() {
         <Navbar
           user={!profileDataLoading && user}
           profileExists={!profileDataLoading && profileData}
+          onClick={() => signInWithGoogle()}
         >
           <CustomButton
             onClick={() => signInWithGoogle()}
@@ -99,7 +108,12 @@ function App() {
               }
             />
           )}
-          <Route path="/add-events" element={<AddEvents />} />
+          {permission === "admin" && (
+            <Route path="/add-gallery" element={<AddEvents />} />
+          )}
+          {permission === "admin" && (
+            <Route path="/add-events" element={<AddEvents />} />
+          )}
           <Route path="*" element={<Landing />} />
         </Routes>
         <Footer />

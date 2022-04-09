@@ -39,7 +39,7 @@
 }
 
 .MemberCard .CardDiv .InfoDiv .ExtraInfo span{
-  @apply font-medium text-black 
+  @apply font-semibold text-black 
   text-[16px] ;
 }
 .MemberCard .CardDiv .InfoDiv .ExtraInfo a{

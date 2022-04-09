@@ -190,9 +190,9 @@ const AddProfile = (props) => {
                       placeholder="How many programming languages do you know of? "
                     />
                     <CustomTextInput
-                      label="Frameworks"
+                      label="Frameworks/Libraries/Databases"
                       name="frameworks"
-                      placeholder="How many Framework do you know of? "
+                      placeholder="How many Framework/Libraries/Databases do you know of? "
                     />
                     <CustomTextInput
                       label="Other Skills"

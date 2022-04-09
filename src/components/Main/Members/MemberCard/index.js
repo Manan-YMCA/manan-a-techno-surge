@@ -27,7 +27,7 @@ const MemberCard = (props) => {
             </div>
             <div className="ExtraInfo">
               <p>
-                <span>Frameworks :&nbsp;</span>
+                <span>Tech Stack :&nbsp;</span>
                 {frameworks}
               </p>
             </div>

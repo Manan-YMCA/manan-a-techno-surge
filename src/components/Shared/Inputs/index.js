@@ -106,3 +106,19 @@ export const CustomSubmitButton = (props) => {
     </div>
   );
 };
+ export const CustomButtonNoFormik =(props)=>{
+   return (
+     <div className="w-full">
+       <TextField
+         {...props}
+         fullWidth
+         id={props.name}
+         label={props.labelTwo}
+         InputLabelProps={{
+           style: { color: "grey" },
+         }}
+         multiline={props.multiline && true}
+       />
+     </div>
+   );
+ }
