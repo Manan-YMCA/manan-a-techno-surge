@@ -62,27 +62,27 @@ function App() {
 
   return (
     <div className="App overflow-x-hidden">
-      <Suspense fallback={<SuspenseLoading />}>
-        <Router>
-          <Navbar
-            user={!profileDataLoading && user}
-            profileExists={!profileDataLoading && profileData}
+      <Router>
+        <Navbar
+          user={!profileDataLoading && user}
+          profileExists={!profileDataLoading && profileData}
+          onClick={() => signInWithGoogle()}
+        >
+          <CustomButton
             onClick={() => signInWithGoogle()}
+            className="hidden md:block pr-3"
           >
-            <CustomButton
-              onClick={() => signInWithGoogle()}
-              className="hidden md:block pr-3"
-            >
-              Member Login
-            </CustomButton>
-          </Navbar>
-          <BackgroundLayout />
-          {pageError && (
-            <ErrorModal
-              errorText={pageError}
-              clicked={() => setPageError(null)}
-            />
-          )}
+            Member Login
+          </CustomButton>
+        </Navbar>
+        <BackgroundLayout />
+        {pageError && (
+          <ErrorModal
+            errorText={pageError}
+            clicked={() => setPageError(null)}
+          />
+        )}
+        <Suspense fallback={<SuspenseLoading />}>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/members" element={<Members />} />
@@ -121,9 +121,9 @@ function App() {
             )}
             <Route path="*" element={<Landing />} />
           </Routes>
-          <Footer />
-        </Router>
-      </Suspense>
+        </Suspense>
+        <Footer />
+      </Router>
     </div>
   );
 }
