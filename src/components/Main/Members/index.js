@@ -19,7 +19,8 @@ const Members = (props) => {
     const yeararray = array.map((item) => {
       return item.data().admission;
     });
-    return yeararray;
+    let uniq = (a) => [...new Set(a)];
+    return uniq(yeararray).sort();
   };
   const yearwiseMemberHandeler = (array, year) => {
     const memberArray = array.map((item) => {
@@ -33,7 +34,6 @@ const Members = (props) => {
       {value && (
         <div>
           {yearArrayHandler(value.docs)
-            .sort()
             .reverse()
             .map((year) => (
               <div key={year} className="px-[0.5rem] md:px-[4rem] pt-[4rem] ">

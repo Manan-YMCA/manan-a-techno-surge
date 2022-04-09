@@ -36,9 +36,8 @@ function App() {
 
   useEffect(() => {
     if (signInUser) {
-      if (allowedUserSnapshot ) {
+      if (allowedUserSnapshot) {
         const res = allowedUserSnapshot.docs.map((doc) => doc.data().Users);
-        console.log("res",res)
         if (res[0].includes(signInUser.user.email)) {
           console.log("contains");
         } else {
@@ -52,7 +51,10 @@ function App() {
   return (
     <div className="App overflow-x-hidden">
       <Router>
-        <Navbar user={user} profileExists={profileData}>
+        <Navbar
+          user={!profileDataLoading && user}
+          profileExists={!profileDataLoading && profileData}
+        >
           <CustomButton
             onClick={() => signInWithGoogle()}
             className="hidden md:block pr-3"
@@ -72,7 +74,7 @@ function App() {
           <Route path="/members" element={<Members />} />
           <Route path="/events" element={<Events />} />
           <Route path="/gallery" element={<Gallery />} />
-          {user && !profileData && (
+          {user && profileData && !profileData.data() && (
             <Route
               path="/add-profile"
               element={
@@ -92,6 +94,7 @@ function App() {
                   user={signInUser}
                   error={allowedUserError}
                   loading={allowedUserLoading}
+                  profileData={profileData.data()}
                 />
               }
             />

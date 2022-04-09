@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -11,6 +11,7 @@ import { doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
 import { signOut } from "firebase/auth";
+
 const normalRoutes = [
   { name: "Home", href: "/", current: true },
   { name: "Members", href: "/members", current: false },
@@ -22,18 +23,14 @@ const profileExistsRoutes = [
   { name: "Members", href: "/members", current: false },
   { name: "Events", href: "/events", current: false },
   { name: "Gallery", href: "/gallery", current: false },
-  { name: "Add Profile", href: "/add-profile", current: false },
-  { name: "Add Events", href: "/add-events", current: false },
+  { name: "Edit Profile", href: "/edit-profile", current: false },
 ];
 const profileDoesNotExistsRoutes = [
-  [
-    { name: "Home", href: "/", current: true },
-    { name: "Members", href: "/members", current: false },
-    { name: "Events", href: "/events", current: false },
-    { name: "Gallery", href: "/gallery", current: false },
-    { name: "Edit Profile", href: "/edit-profile", current: false },
-    { name: "Add Events", href: "/add-events", current: false },
-  ],
+  { name: "Home", href: "/", current: true },
+  { name: "Members", href: "/members", current: false },
+  { name: "Events", href: "/events", current: false },
+  { name: "Gallery", href: "/gallery", current: false },
+  { name: "Add Profile", href: "/add-profile", current: false },
 ];
 
 function classNames(...classes) {
@@ -42,14 +39,27 @@ function classNames(...classes) {
 
 export default function Navbar(props) {
   const { user, profileExists } = props;
+  const [routes, setRoutes] = useState(normalRoutes);
   const [theme, setTheme] = useDarkMode();
   const [currentPage, setCurrentPage] = useState(0);
+  const [permission, setPermission] = useState(null);
+  useEffect(() => {
+    const routesHandler = (loggedInUser, profileData) => {
+      if (loggedInUser && !profileData) {
+        setRoutes(profileDoesNotExistsRoutes);
+        setPermission(null);
+      } else if (loggedInUser && profileData) {
+        console.log("userData", profileData);
+        setRoutes(profileExistsRoutes);
+        setPermission(profileData.permission);
+      } else {
+        setRoutes(normalRoutes);
+        setPermission(null);
+      }
+    };
+    routesHandler(user, profileExists ? profileExists.data() : false);
+  }, [user, profileExists]);
 
-  const routesHandler = (user, exists) => {
-    if (user && !exists) return profileDoesNotExistsRoutes;
-    if (user && exists) return profileExistsRoutes;
-    return normalRoutes;
-  };
   return (
     <Disclosure
       as="nav"
@@ -84,50 +94,29 @@ export default function Navbar(props) {
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex items-center justify-center space-x-4">
-                    {props.user ? (
-                      <div className="flex items-center justify-center space-x-4">
-                        {routesHandler().map((item, index) => (
-                          <NavLink
-                            onClick={() => setCurrentPage(index)}
-                            key={item.name}
-                            to={item.href}
-                            className={classNames(
-                              currentPage === index
-                                ? "bg-gray-800 text-white"
-                                : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
-                              "px-3 py-2 rounded-md text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            {item.name}
-                          </NavLink>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center space-x-1 lg:space-x-4">
-                        {routesHandler().map((item, index) => (
-                          <NavLink
-                            onClick={() => setCurrentPage(index)}
-                            key={item.name}
-                            to={item.href}
-                            className={classNames(
-                              currentPage === index
-                                ? "bg-gray-800 text-white"
-                                : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
-                              "px-3 py-2 rounded-md text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            {item.name}
-                          </NavLink>
-                        ))}
-                      </div>
-                    )}
+                    <div className="flex items-center justify-center space-x-4">
+                      {routes.map((item, index) => (
+                        <NavLink
+                          onClick={() => setCurrentPage(index)}
+                          key={item.name}
+                          to={item.href}
+                          className={classNames(
+                            currentPage === index
+                              ? "bg-gray-800 text-white"
+                              : "dark:text-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white",
+                            "px-3 py-2 rounded-md text-sm font-medium"
+                          )}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          {item.name}
+                        </NavLink>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {user && props.children}
+                {!user && props.children}
                 <button
                   type="button"
                   className="bg-[#FB5343] p-1 rounded-full text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -146,7 +135,7 @@ export default function Navbar(props) {
                     />
                   )}
                 </button>
-                {user && (
+                {props.user && (
                   <Menu as="div" className="ml-3 relative">
                     <div>
                       <Menu.Button className="bg-gray-300  flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
@@ -169,6 +158,39 @@ export default function Navbar(props) {
                       leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {permission === "admin" && (
+                          <Menu.Item>
+                            {({ active }) => (
+                              <NavLink to="/add-events">
+                                <div
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  Add Event
+                                </div>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
+                        {permission === "admin" && (
+                          <Menu.Item>
+                            {({ active }) => (
+                              <NavLink to="/add-gallery">
+                                <div
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  Add Gallery Image
+                                </div>
+                              </NavLink>
+                            )}
+                          </Menu.Item>
+                        )}
+
                         <Menu.Item>
                           {({ active }) => (
                             <div
@@ -193,54 +215,28 @@ export default function Navbar(props) {
 
           <Disclosure.Panel className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 BackgroundBlur">
-              {user ? (
-                <div>
-                  {routesHandler().map((item, index) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="div"
-                      className={classNames(
-                        currentPage === index
-                          ? "bg-gray-200 text-gray-700"
-                          : "text-gray-400 hover:bg-gray-700 hover:text-white",
-                        "block px-3 py-2 rounded-md text-base font-medium"
-                      )}
-                      aria-current={currentPage === index ? "page" : undefined}
+              <div>
+                {routes.map((item, index) => (
+                  <Disclosure.Button
+                    key={item.name}
+                    as="div"
+                    className={classNames(
+                      currentPage === index
+                        ? "bg-gray-200 text-gray-700"
+                        : "text-gray-400 hover:bg-gray-700 hover:text-white",
+                      "block px-3 py-2 rounded-md text-base font-medium"
+                    )}
+                    aria-current={currentPage === index ? "page" : undefined}
+                  >
+                    <NavLink
+                      onClick={() => setCurrentPage(index)}
+                      to={item.href}
                     >
-                      <NavLink
-                        onClick={() => setCurrentPage(index)}
-                        to={item.href}
-                      >
-                        {item.name}
-                      </NavLink>
-                    </Disclosure.Button>
-                  ))}
-                </div>
-              ) : (
-                <div>
-                  {normalRoutes.map((item, index) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="div"
-                      className={classNames(
-                        currentPage === index
-                          ? "bg-gray-200 text-gray-700"
-                          : "text-gray-400 hover:bg-gray-700 hover:text-white",
-                        "block px-3 py-2 rounded-md text-base font-medium"
-                      )}
-                      aria-current={currentPage === index ? "page" : undefined}
-                    >
-                      <NavLink
-                        onClick={() => setCurrentPage(index)}
-                        to={item.href}
-                      >
-                        {item.name}
-                      </NavLink>
-                    </Disclosure.Button>
-                  ))}
-                </div>
-              )}
-
+                      {item.name}
+                    </NavLink>
+                  </Disclosure.Button>
+                ))}
+              </div>
               <Disclosure.Button
                 as="div"
                 className={classNames(

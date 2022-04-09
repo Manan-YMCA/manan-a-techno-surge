@@ -33,7 +33,7 @@ function useFiles({ initialState = [], maxFiles }) {
   return [state, withBlobs];
 }
 
-const ImageUploadBox = ({ onDrop, maxFiles = 1 }) => {
+const ImageUploadBox = ({ fileURL, onDrop, maxFiles = 1 }) => {
   const [over, setover] = useState(false);
   const [files, setfiles] = useFiles({ maxFiles });
   const $input = useRef(null);
@@ -90,6 +90,15 @@ const ImageUploadBox = ({ onDrop, maxFiles = 1 }) => {
                 alt="your file"
               />
             ))}
+          </div>
+        )}
+        {fileURL && (
+          <div className="h-[10rem] object-cover overflow-hidden w-full">
+            <img
+              className="h-full rounded-lg"
+              src={fileURL}
+              alt="your file"
+            />
           </div>
         )}
       </div>

@@ -7,7 +7,7 @@
 }
 
 .MemberCard .CardDiv .BannerImageDiv {
-  @apply rounded-t-lg h-32 overflow-hidden;
+  @apply rounded-t-lg w-full h-32 overflow-hidden;
 }
 
 .MemberCard .BannerImageDiv .Image {

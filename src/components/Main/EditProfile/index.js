@@ -25,11 +25,14 @@ import { useForkRef } from "@mui/material";
 //import'./style.css';
 
 const EditProfile = (props) => {
+  const { profileData } = props;
   const [user, loading, UserError] = useAuthState(auth);
   const [error, setError] = useState(null);
-  const [linksArray, setLinksArray] = useState([{ title: "", link: "" }]);
+  const [linksArray, setLinksArray] = useState(profileData.socialLinks);
   const [profilePic, setProfilePic] = useState(null);
-  const [SelectedYear, setSelectedYear] = useState(new Date());
+  const [SelectedYear, setSelectedYear] = useState(
+    new Date(profileData.admission, 10, 20)
+  );
   const [formSubmitting, SetFormSubmitting] = useState(false);
   //Upload file
   const [uploadFile, uploading, snapshot, uploadError] = useUploadFile();
@@ -101,11 +104,7 @@ const EditProfile = (props) => {
     return modArr;
   };
   const dataSubmitHandler = async (values, { setSubmitting, resetForm }) => {
-    if (!profilePic && user) {
-      setError("Please select a profile picture");
-    } else if (profilePic.length === 0) {
-      setError("Please select a profile picture");
-    } else if (user) {
+    if (user) {
       profilePicRef = ref(storage, `members/${user.email}.jpg`);
       SetFormSubmitting(true);
       const data = {
@@ -117,17 +116,16 @@ const EditProfile = (props) => {
         otherSkills: values.otherSkills,
         socialLinks: removeEmptySocialLinks(linksArray),
         banner: values.banner,
-        permission: "member",
-        pfp: await upload(profilePic[0], profilePicRef, 0.1),
+        permission: profileData.permission,
+        pfp:
+          profilePic.length === 0
+            ? profileData.pfp
+            : await upload(profilePic[0], profilePicRef, 0.1),
         email: user.email,
       };
       await setDoc(doc(db, "userProfiles", user.email), data);
-      console.log("Data", data);
-      setProfilePic(null);
       setSubmitting(false);
       SetFormSubmitting(false);
-      // resetForm();
-      // history.push(`/user/${auth.userId}`);
     }
   };
   return (
@@ -143,13 +141,13 @@ const EditProfile = (props) => {
             <div className="BackgroundBlurForm p-2 md:p-6 rounded border shadow-lg">
               <Formik
                 initialValues={{
-                  name: "",
-                  role: "",
-                  admission: "",
-                  languages: "",
-                  frameworks: "",
-                  otherSkills: "",
-                  banner: "",
+                  name: profileData.name,
+                  role: profileData.role,
+                  admission: profileData.admission,
+                  languages: profileData.languages,
+                  frameworks: profileData.frameworks,
+                  otherSkills: profileData.otherSkills,
+                  banner: profileData.banner,
                 }}
                 validationSchema={Yup.object({
                   name: Yup.string()
@@ -208,6 +206,9 @@ const EditProfile = (props) => {
                       <p>Select Profile Picture</p>
                     </div>
                     <ImageUploadBox
+                      fileURL={
+                        profilePic && profilePic.length === 0 && profileData.pfp
+                      }
                       onDrop={(files) => {
                         setProfilePic(files);
                       }}
@@ -224,6 +225,8 @@ const EditProfile = (props) => {
                         onChangeTwo={(event) => linkChangeHandler(event, index)}
                         labelOne="Link Title"
                         labelTwo="Link"
+                        valueOne={item.title}
+                        valueTwo={item.link}
                       />
                     ))}
                     <div className="flex gap-6 items-center justify-center">
