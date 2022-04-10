@@ -11,6 +11,7 @@ import { doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../../firebase";
 import { signOut } from "firebase/auth";
+import { motion } from "framer-motion";
 
 const normalRoutes = [
   { name: "Home", href: "/", current: true },
@@ -84,11 +85,29 @@ export default function Navbar(props) {
               </div>
               <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center">
-                  <img className="w-8 h-8" src={MananLogo} alt="manan" />
+                  <motion.div
+                    className="Logo-Wrapper"
+                    initial={{ scale: 0, rotate: 180 }}
+                    animate={{ rotate: 0, scale: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 60,
+                      damping: 20,
+                    }}
+                  >
+                    <img className="w-8 h-8" src={MananLogo} alt="manan" />
+                  </motion.div>
                   <p className="text-gray-800 dark:text-white pl-1 md:pl-3 text-[24px]">
-                    <span className="font-extrabold text-gray-700 dark:text-gray-50">
-                      Manan
-                    </span>
+                    <motion.div
+                      animate={{ x: 0, opacity: 1 }}
+                      initial={{ x: -10, opacity: 0 }}
+                      transition={{ ease: "easeOut", duration: 2 }}
+                      className="Logo-Text-Wrapper"
+                    >
+                      <span className="font-extrabold text-gray-700 dark:text-gray-50">
+                        Manan
+                      </span>
+                    </motion.div>
                   </p>
                 </div>
                 <div className="hidden sm:block sm:ml-6">
@@ -136,9 +155,18 @@ export default function Navbar(props) {
                 </button>
                 {props.user && (
                   <Menu as="div" className="ml-3 relative">
-                    <div>
+                    <motion.div
+                      animate={{ scale: 1 }}
+                      initial={{ scale: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 60,
+                        damping: 20,
+                      }}
+                    >
                       <Menu.Button className="bg-gray-300  flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span className="sr-only">Open user menu</span>
+
                         <img
                           className="h-8 w-8 rounded-full"
                           src={user.photoURL}
@@ -146,7 +174,7 @@ export default function Navbar(props) {
                           referrerPolicy="no-referrer"
                         />
                       </Menu.Button>
-                    </div>
+                    </motion.div>
                     <Transition
                       as={Fragment}
                       enter="transition ease-out duration-100"

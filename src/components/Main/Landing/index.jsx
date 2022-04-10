@@ -10,10 +10,21 @@ const Landing = (props) => {
       <div className="Landing">
         {/* <BackgroundIcons /> */}
         <div className="TitleBox">
-          <p className="HeadOne PurpleGradient  ">
-            <span className="Title">Manan&nbsp;</span>
-            <span className="Subtitle">A Techno Surge</span>
-          </p>
+          <motion.div
+            className="Logo-Wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              ease: "easeOut",
+              duration: 2,
+            }}
+          >
+            <p className="HeadOne PurpleGradient">
+              <span className="Title">Manan&nbsp;</span>
+              <span className="Subtitle">A Techno Surge</span>
+            </p>
+          </motion.div>
+
           <div className="HeadThree">
             <p className=" ">Know More</p>
             <div className="flex justify-center">

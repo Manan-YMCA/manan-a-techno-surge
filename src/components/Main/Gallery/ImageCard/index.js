@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 import "./style.css";
 
@@ -6,20 +7,26 @@ const ImageCard = (props) => {
   const { name, desc, image } = props.gallery;
   return (
     <React.Fragment>
-      <div className="ImageCardDiv">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ ease: "easeOut", duration: 1 }}
+        viewport={{ once: true }}
+        className="ImageCardDiv"
+      >
         <div className="content">
           <div className="content-overlay"></div>
           <img
             className="content-image"
             alt="manan"
-            src="https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067__340.png"
+            src={image}
           />
           <div className="content-details fadeIn-bottom">
             <h3 className="content-title">{name}</h3>
             <p className="content-text">{desc}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </React.Fragment>
   );
 };

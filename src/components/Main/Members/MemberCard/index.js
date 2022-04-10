@@ -1,13 +1,33 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 import "./style.css";
 
+const boxItem = {
+  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 20 },
+  transition:{ ease: "easeOut", duration: 0.5 }
+};
 const MemberCard = (props) => {
-  const { name, frameworks, languages, otherSkills, banner, pfp, socialLinks,role } =
-    props.member;
+  const {
+    name,
+    frameworks,
+    languages,
+    otherSkills,
+    banner,
+    pfp,
+    socialLinks,
+    role,
+  } = props.member;
   return (
     <React.Fragment>
-      <div className="MemberCard">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ ease: "easeOut", duration: 1 }}
+        viewport={{ once: true }}
+        className="MemberCard"
+      >
         <div className="CardDiv">
           <div className="BannerImageDiv">
             <img className="Image" src={banner} alt="cover" />
@@ -55,7 +75,7 @@ const MemberCard = (props) => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </React.Fragment>
   );
 };

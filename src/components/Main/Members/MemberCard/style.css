@@ -1,9 +1,8 @@
 .MemberCard {
-  @apply flex justify-center items-center rounded-md h-full ;
+  @apply flex justify-center items-start rounded-md h-full ;
 }
 
 .MemberCard .CardDiv {
-  /* @apply max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto shadow-lg rounded-lg text-gray-900 bg-white ; */
   @apply w-[90%] sm:w-[60%] md:w-[20rem] lg:w-[23rem] md:mx-auto lg:mx-auto xl:mx-auto shadow-lg rounded-lg text-gray-900 bg-white ;
 }
 
