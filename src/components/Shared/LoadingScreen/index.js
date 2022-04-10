@@ -1,21 +1,21 @@
-import React from 'react';
+import React from "react";
 import Backdrop from "@mui/material/Backdrop";
-import Loader from '../Loader';
+import Loader from "../Loader";
 //import'./style.css';
 
-const LoadingScreen = (props)=>{
-    return (
-      <React.Fragment>
-        <Backdrop
-          open={true}
-          className="z-50 dark:bg-gray-600/[0.25] bg-gray-200/[0.25] filter backdrop-blur-sm "
-        >
-          <div className="flex items-center justify-center h-full">
-           <Loader/>
-          </div>
-        </Backdrop>
-      </React.Fragment>
-    );
+const LoadingScreen = (props) => {
+  return (
+    <React.Fragment>
+      <div
+        open={true}
+        className="z-50 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 h-screen w-screen fixed inset-0"
+      >
+        <div className="flex items-center justify-center h-full">
+          <Loader />
+        </div>
+      </div>
+    </React.Fragment>
+  );
 };
 
-export default LoadingScreen ;
+export default LoadingScreen;

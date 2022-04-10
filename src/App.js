@@ -12,7 +12,7 @@ import { useCollectionOnce, useDocument } from "react-firebase-hooks/firestore";
 import { signOut } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ErrorModal from "./components/Shared/ErrorModal";
-import SuspenseLoading from "./components/Shared/SuspenseLoading";
+import LoadingScreen from "./components/Shared/LoadingScreen";
 
 //Lazy Imports
 const Landing = React.lazy(() => import("./components/Main/Landing"));
@@ -82,7 +82,7 @@ function App() {
             clicked={() => setPageError(null)}
           />
         )}
-        <Suspense fallback={<SuspenseLoading />}>
+        <Suspense fallback={<LoadingScreen />}>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/members" element={<Members />} />
