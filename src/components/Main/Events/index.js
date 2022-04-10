@@ -38,12 +38,16 @@ const Events = (props) => {
     return uniq(yearArray).sort().reverse();
   };
   const eventsArrayHandler = (array, year) => {
-    const eventsArray = array.map((item) => {
-      return (
-        new Date(item.data().timestamp.toDate()).getFullYear() === year &&
-        item.data()
-      );
-    });
+    const eventsArray = array
+      .map((item) => {
+        return (
+          new Date(item.data().timestamp.toDate()).getFullYear() === year &&
+          item.data()
+        );
+      })
+      .sort((a, b) => {
+        return new Date(a.timestamp.toDate()) - new Date(b.timestamp.toDate());
+      });
     return eventsArray;
   };
 
@@ -71,9 +75,11 @@ const Events = (props) => {
               variants={boxList}
               className=" grid grid-cols-1 lg:grid-cols-2 gap-x-[10rem] gap-y-[5rem] align-top"
             >
-              {eventsArrayHandler(value.docs, year).map((event) => (
-                <EventCard event={event} />
-              ))}
+              {eventsArrayHandler(value.docs, year)
+                .reverse()
+                .map((event) => (
+                  <EventCard event={event} />
+                ))}
             </motion.li>
           </motion.div>
         ))}
