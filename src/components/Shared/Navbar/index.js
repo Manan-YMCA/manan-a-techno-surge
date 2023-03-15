@@ -97,7 +97,7 @@ export default function Navbar(props) {
                   >
                     <img className="w-8 h-8" src={MananLogo} alt="manan" />
                   </motion.div>
-                  <p className="text-gray-800 dark:text-white pl-1 md:pl-3 text-[24px]">
+                  <span className="text-gray-800 dark:text-white pl-1 md:pl-3 text-[24px]">
                     <motion.div
                       animate={{ x: 0, opacity: 1 }}
                       initial={{ x: -10, opacity: 0 }}
@@ -108,7 +108,7 @@ export default function Navbar(props) {
                         Manan
                       </span>
                     </motion.div>
-                  </p>
+                  </span>
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex items-center justify-center space-x-4">
