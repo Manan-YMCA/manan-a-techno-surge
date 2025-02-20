@@ -113,10 +113,10 @@ function App() {
                 }
               />
             )}
-            {permission === "admin" && (
+            {permission === "member" && (
               <Route path="/add-gallery" element={<AddGallery />} />
             )}
-            {permission === "admin" && (
+            {permission === "member" && (
               <Route path="/add-events" element={<AddEvents />} />
             )}
             <Route path="*" element={<Landing />} />

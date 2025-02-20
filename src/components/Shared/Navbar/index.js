@@ -185,7 +185,7 @@ export default function Navbar(props) {
                       leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {permission === "admin" && (
+                        {permission === "member" && (
                           <Menu.Item>
                             {({ active }) => (
                               <NavLink to="/add-events">
@@ -201,7 +201,7 @@ export default function Navbar(props) {
                             )}
                           </Menu.Item>
                         )}
-                        {permission === "admin" && (
+                        {permission === "member" && (
                           <Menu.Item>
                             {({ active }) => (
                               <NavLink to="/add-gallery">
