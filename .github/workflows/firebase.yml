@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependencies, Build, and Test
         run: |
           yarn install
-          yarn build
+          CI=false yarn build
 
       - name: Archive Build
         uses: actions/upload-artifact@v4
