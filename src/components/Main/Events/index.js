@@ -37,14 +37,28 @@ const Events = (props) => {
     let uniq = (a) => [...new Set(a)];
     return uniq(yearArray).sort().reverse();
   };
+  // const eventsArrayHandler = (array, year) => {
+  //   const eventsArray = array
+  //     .map((item) => {
+  //       return (
+  //         new Date(item.data().timestamp.toDate()).getFullYear() === year &&
+  //         item.data()
+  //       );
+  //     })
+  //     .sort((a, b) => {
+  //       return new Date(a.timestamp.toDate()) - new Date(b.timestamp.toDate());
+  //     });
+  //   return eventsArray;
+  // };
   const eventsArrayHandler = (array, year) => {
     const eventsArray = array
       .map((item) => {
-        return (
-          new Date(item.data().timestamp.toDate()).getFullYear() === year &&
-          item.data()
-        );
+        const data = item.data();
+        return new Date(data.timestamp.toDate()).getFullYear() === year
+          ? data
+          : null;
       })
+      .filter(Boolean) // Remove null values
       .sort((a, b) => {
         return new Date(a.timestamp.toDate()) - new Date(b.timestamp.toDate());
       });
