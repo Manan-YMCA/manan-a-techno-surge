@@ -37,14 +37,17 @@ const Gallery = (props) => {
     return uniq(yearArray).sort().reverse();
   };
   const yearwiseGalleryHandler = (array, year) => {
-    const galleryArray = array.map((item) => {
-      return (
-        new Date(item.data().timestamp.toDate()).getFullYear() === year &&
-        item.data()
-      );
-    });
+    const galleryArray = array
+      .map((item) => {
+        const data = item.data();
+        return new Date(data.timestamp.toDate()).getFullYear() === year
+          ? data
+          : null;
+      })
+      .filter(Boolean); // Remove null/false values
     return galleryArray;
   };
+
   return (
     <React.Fragment>
       <MastTitle title="Gallery" />
